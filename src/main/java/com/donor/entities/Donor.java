@@ -64,8 +64,7 @@ public class Donor {
 		 private String recentMedications;
 		 
 		 private String medicalConditions; 
-		 
-		 private String healthNotes ;  // (diabetes, anemia, etc.)
+	
 		      
 		 private LocalDateTime createdAt;
 		 
