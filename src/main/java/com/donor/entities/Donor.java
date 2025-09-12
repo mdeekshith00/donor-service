@@ -2,11 +2,24 @@ package com.donor.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.common.enums.BloodGroupType;
+import com.common.enums.DonationEligibilityStatus;
+import com.common.enums.RegisterType;
+import com.common.enums.StatusType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,13 +38,16 @@ public class Donor {
 
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
+		@Column(name = "donor_id")
 		private Integer donorId;
 		
-		private Integer userId; // refering from user
+		@Enumerated(EnumType.STRING) 
+		@Column(nullable = true)
+		private BloodGroupType bloodGroup;
 		
-		private String bloodGroup;
-		
-	    private String donationEligibilityStatus; // eligible, not eligible, pending approval
+		@Enumerated(EnumType.STRING)  
+		@Column(nullable = true)
+	    private DonationEligibilityStatus donationEligibilityStatus; // eligible, not eligible, pending approval
 		 
 		private Boolean isAvailableToDonate;
 		
@@ -52,25 +68,42 @@ public class Donor {
 		 private Boolean isActive; // If donor is still participating
 		 
 		 private Boolean isVerified; // If user has passed eligibility verification
-		 
-		 private String registeredVia; // e.g., "app", "web", "camp"
+		 @Enumerated(EnumType.STRING)  
+		 @Column(nullable = true)
+		 private RegisterType registeredVia; // e.g., "app", "web", "camp"
 
 		 private Double weightInKg;
 		 
 		 private Double hemoglobinLevel;       // g/dL
 		 
 		 private Boolean hasChronicDiseases;   // e.g., diabetes, hypertension
-		 
-		 private String recentMedications;
-		 
-		 private String medicalConditions; 
-	
-		      
+
 		 private LocalDateTime createdAt;
 		 
 		 private LocalDateTime updatedAt;
+		 @Enumerated(EnumType.STRING) 
+		 @Column(nullable = true)
+		 private StatusType status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
+
+		 private Integer userId; // refering from user
+		 private String recentMedications;
+		 private String medicalConditions; 
 		 
-		 private String status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
+		 @OneToMany(mappedBy = "donor")
+		 @JsonManagedReference
+		 private List<DonorHealthCheck> DonorHealthCheck;
+		 
+		 @OneToOne(mappedBy = "donor")
+		 @JsonManagedReference
+		 private DonorLifestyleProfile donorLifestyleProfile;
+		 
+		 @OneToMany(mappedBy = "donor")
+		 @JsonManagedReference
+		 private List<DonorRewards> donorRewards;
+		 
+		 @OneToMany(mappedBy = "donor")
+		 @JsonBackReference
+		 private List<PreDonationCheckup> preDonationCheckup;
 
 	}
 
