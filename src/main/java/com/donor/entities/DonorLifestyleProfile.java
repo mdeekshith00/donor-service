@@ -30,7 +30,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "donor_lifestyle_profile")
 public class DonorLifestyleProfile {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_lifestyle_profile_id")
@@ -45,21 +45,21 @@ public class DonorLifestyleProfile {
 	private Tatoo tattoosOrPiercings; // (Yes/No, dateOfLastTattoo)
 	@Embedded
 	private SleepTime sleepPattern; // (Normal/Irregular, avg hours per day)
-	@Enumerated(EnumType.STRING)  
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private DietType dietType; // (Veg/Non-Veg/Vegan/Other)
-	
+
 	private String exerciseRoutine; //  (Regular/Occasional/Never)
 	@Embedded
 	private Habits otherhabits; // (free text – e.g., chewing tobacco, medications)
-	
+
 	private LocalDateTime lastUpdatedDate;
-	
+
 	@OneToOne
 	@JoinColumn(name = "donor_id")
 	@JsonBackReference
 	private Donor donor;
-	
-	
+
+
 
 }

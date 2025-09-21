@@ -4,6 +4,6 @@ public enum DietType {
 	VEG,
 	NON_VEG,
 	OTHER;
-	
+
 
 }

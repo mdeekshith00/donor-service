@@ -35,38 +35,38 @@ public class PreDonationCheckup {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "pre_donation_checkup_id" , nullable = true)
 	private Integer PreDonationCheckupId;
-	
+
 	@Column(nullable = true)
 	private String bloodPressure;
-	
+
 	@Column(nullable = true)
 	private String hemoglobinLevel;
-	
+
 	@Column(nullable = true)
 	private String pulseRate;
-	
+
 	@Column(nullable = true)
 	private String temperature;
-	
+
 	@Column(nullable = true)
 	private String weightAtDonation;
-	
-	@Enumerated(EnumType.STRING)  
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private Remarks remarks; // (fit/unfit, reason)
-	
-	@Enumerated(EnumType.STRING) 
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private TestedBy checkedBy; //  (Doctor/Nurse ID)
-	
+
 	@Column(nullable = true)
 	private LocalDate  checkupDate;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "donor_id")
 	@JsonManagedReference
 	private Donor donor;
-	
+
 
 }
 

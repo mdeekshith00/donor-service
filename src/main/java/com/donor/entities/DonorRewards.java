@@ -32,37 +32,37 @@ import lombok.Setter;
 @Entity
 @Table(name ="donor_rewards")
 public class DonorRewards {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_rewards_id")
 	private Integer DonorRewardsId;
-	
-	@Enumerated(EnumType.STRING)  
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private CERTIFICATETYPE type ; // CERTIFICATE, COUPON, VOUCHER, BADGE, POINTS).
-	
+
 	private String title; //  "Certificate of Appreciation" / "Free Coffee Voucher".
-	
+
 	private String description ;
-	
+
 	private LocalDate issuedDate;
-	
+
 	private LocalDate expiryDate ;
-	
-	@Enumerated(EnumType.STRING) 
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private StatusType status; // ENUM: ACTIVE, USED, EXPIRED, REVOKED).
-	
+
 	private String issuedBy ; // (userId → Admin who issued OR system automation).
-	
+
 	private String redeemedAt ; //  if coupon/voucher, store partner/vendor.
-	
+
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY )
 	@JoinColumn(name = "donor_id")
 	@JsonBackReference
 	private Donor donor;
-	
+
 
 
 }
