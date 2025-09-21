@@ -6,17 +6,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
+import com.common.dto.DonorResponseDto;
 import com.common.dto.UserDto;
 
 @Service
 public class DonorUserCacheService {
-	private final Map<Integer, UserDto> userCache = new ConcurrentHashMap<>();
+	private final Map<Integer, DonorResponseDto> userCache = new ConcurrentHashMap<>();
 	
-    public Optional<UserDto> getUserById(Integer userId) {
+    public Optional<DonorResponseDto> getUserById(Integer userId) {
         return Optional.ofNullable(userCache.get(userId));
     }
 
-    public void putUser(UserDto user) {
+    public void putUser(DonorResponseDto user) {
         if (user != null && user.getUserId() != null) {
             userCache.put(user.getUserId(), user);
         }

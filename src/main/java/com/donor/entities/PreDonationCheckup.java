@@ -1,5 +1,6 @@
 package com.donor.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import com.donor.enums.Remarks;
@@ -30,7 +31,12 @@ import lombok.Setter;
 @Builder
 @Table(name = "pre_donation_checkup")
 @Entity
-public class PreDonationCheckup {
+public class PreDonationCheckup implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "pre_donation_checkup_id" , nullable = true)

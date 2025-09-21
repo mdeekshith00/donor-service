@@ -1,13 +1,14 @@
 package com.donor.service;
 
-import com.donor.entities.Donor;
+import com.donor.dto.FullDonorResponseDto;
 import com.donor.vo.DonorRequestVO;
-import com.donor.vo.DonorResponseVO;
+import com.donor.vo.UpadteDonorRequestVO;
 
 public interface DonorServcie {
-	
-//	public Donor getOrCreateDonor(Integer userId, String bloodGroup);
-	public Donor createDonor(DonorRequestVO request);
+	 
+	public FullDonorResponseDto fetchUserAndCreateDonor(DonorRequestVO request);
+	public FullDonorResponseDto getDonorDeatils(Integer donorId);
+	public FullDonorResponseDto updateDonorDetails(Integer donorId , UpadteDonorRequestVO request);
 
 
 }

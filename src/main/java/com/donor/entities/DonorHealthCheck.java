@@ -1,5 +1,7 @@
 package com.donor.entities;
 
+import java.io.Serializable;
+
 import com.common.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -28,7 +30,12 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "donor_health_check")
-public class DonorHealthCheck {
+public class DonorHealthCheck implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

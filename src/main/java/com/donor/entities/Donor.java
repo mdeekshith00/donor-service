@@ -1,5 +1,6 @@
 package com.donor.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +35,12 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "donor")
-public class Donor {
+public class Donor implements Serializable {
+
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +74,7 @@ public class Donor {
 		 private Boolean isActive; // If donor is still participating
 
 		 private Boolean isVerified; // If user has passed eligibility verification
+		 
 		 @Enumerated(EnumType.STRING)
 		 @Column(nullable = true)
 		 private RegisterType registeredVia; // e.g., "app", "web", "camp"
@@ -86,7 +93,9 @@ public class Donor {
 		 private StatusType status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
 
 		 private Integer userId; // refering from user
+		 
 		 private String recentMedications;
+		 
 		 private String medicalConditions;
 
 		 @OneToMany(mappedBy = "donor")

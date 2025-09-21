@@ -8,26 +8,16 @@ import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
-import com.donor.entities.DonorHealthCheck;
-import com.donor.entities.DonorLifestyleProfile;
-import com.donor.entities.DonorRewards;
-import com.donor.entities.PreDonationCheckup;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 @Builder
 @Setter
 @Getter
-public class DonorRequestVO {
+public class UpadteDonorRequestVO {
 	@NotNull
 	 private Integer userId;
 	 @NotNull
@@ -73,12 +63,12 @@ public class DonorRequestVO {
 		 
 		 private String medicalConditions;
 
-		 private List<DonorHealthCheckVO> DonorHealthCheck;
+		 private DonorHealthCheckVO DonorHealthCheck;
 
 		 private DonorLifestyleProfileVO donorLifestyleProfile;
 
-		 private List<DonorRewardsVO> donorRewards;
+		 private DonorRewardsVO donorRewards;
 
-		 private List<PreDonationCheckupVO> preDonationCheckup;
+		 private PreDonationCheckupVO preDonationCheckup;
 
 }

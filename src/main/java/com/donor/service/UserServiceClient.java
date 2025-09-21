@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.common.dto.UserDto;
+import com.common.dto.DonorResponseDto;
 import com.github.benmanes.caffeine.cache.Cache;
 
 import lombok.RequiredArgsConstructor;
@@ -16,26 +16,29 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceClient {
 
     private final WebClient.Builder webClientBuilder;
-    private final Cache<Integer, UserDto> userCache;
+    private final Cache<Integer, DonorResponseDto> userCache;
+    private final String systemToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBbnUiLCJVc2VyX1Bob25lTnVtYmVyICI6Ijk4NzY1MTMyMTMi"
+    		+ "LCJVc2VyX1JvbGU6IjpbIkRPTk9SIl0sIkpXdF9Vc2VySWQgOiI6IjEiLCJpYXQiOjE3NTg0NzYzMzgsImV4cCI6MTc1ODUxMjMzOH0.vlM"
+    		+ "TsPj0yB"
+    		+ "orX5RF6iXKgOqFaCUAsLy3P8-kHi5eApM";
 
-    /**
-     * Fetch user info from user-service by userId.
-     * Synchronous call for now; fallback can be implemented later.
-     */
+//     Fetch user info from user-service by userId. Synchronous call for now; fallback can be implemented later.
 
-    public Optional<UserDto> getUserById(Integer userId) {
+    public Optional<DonorResponseDto> getUserById(Integer userId) {
         // 1. Try cache first
-        UserDto cachedUser = userCache.getIfPresent(userId);
+    	DonorResponseDto cachedUser = userCache.getIfPresent(userId);
         if (cachedUser != null) {
             return Optional.of(cachedUser);
         }
 
         // 2. Call user-service if not cached
-        UserDto user = webClientBuilder.build()
+        DonorResponseDto user = webClientBuilder.build()
                 .get()
-                .uri("http://user-service/api/users/{id}", userId)
+                .uri("http://user-service/user/donor-details/{id}", userId)
+                .header("Authorization", "Bearer " + systemToken)
                 .retrieve()
-                .bodyToMono(UserDto.class)
+                .bodyToMono(DonorResponseDto.class)
+//                .blockOptional(); // synchronous call
                 .block();
 
         // 3. Store in cache
