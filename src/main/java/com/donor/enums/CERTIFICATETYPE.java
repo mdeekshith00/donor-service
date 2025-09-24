@@ -2,8 +2,8 @@ package com.donor.enums;
 
 public enum CERTIFICATETYPE {
 	CERTIFICATE,
-	COUPON, 
-	VOUCHER, 
+	COUPON,
+	VOUCHER,
 	BADGE,
 	POINTS
 

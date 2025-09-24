@@ -1,5 +1,7 @@
 package com.donor.entities;
 
+import java.io.Serializable;
+
 import com.common.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -28,49 +30,54 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "donor_health_check")
-public class DonorHealthCheck {
-	
+public class DonorHealthCheck implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_health_check_id")
 	private Integer DonorHealthCheckId;
-	
+
 	@Column(nullable = true)
 	private String hemoglobinLevel;
-	
+
 	@Column(nullable = true)
 	private Integer bloodPressureSystolic;
-	
+
 	@Column(nullable = true)
 	private Integer bloodPressureDiastolic;
-	
+
 	@Column(nullable = true)
 	private String temperature;
-	
+
 	private Integer pulseRate;
-	
+
 	@Column(nullable = true)
 	private String medicalRemarks;
-	
+
 	@Column(nullable = true)
 	private Boolean allergies;
-	
+
 	@Column(nullable = true)
 	private Float weight;
-	
+
 	@Column(nullable = true)
 	private Long height;
-	
+
 	@Column(nullable = true)
     private String healthNotes ;  // (diabetes, anemia, etc.)
-	
+
 	@Column(nullable = true)
     private String screenedBy; // (userId → medical staff from Hospital-Service).
-	
-	@Enumerated(EnumType.STRING)  
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
     private StatusType status; //  ENUM: PASSED, FAILED, RECHECK_REQUIRED)
-    
+
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JoinColumn(name = "donor_id")
     @JsonBackReference

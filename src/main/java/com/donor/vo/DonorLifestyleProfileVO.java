@@ -1,22 +1,20 @@
-package com.donor.entities;
+package com.donor.vo;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.donor.entities.Alochol;
+import com.donor.entities.Drug;
+import com.donor.entities.Habits;
+import com.donor.entities.SleepTime;
+import com.donor.entities.Smoking;
+import com.donor.entities.Tatoo;
 import com.donor.enums.DietType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.NegativeOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,17 +26,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "donor_lifestyle_profile")
-public class DonorLifestyleProfile implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "donor_lifestyle_profile_id")
+public class DonorLifestyleProfileVO {
+	
 	private Integer DonorLifestyleProfile;
 	@Embedded
 	private Smoking smoking; //  (Yes/No, packs per day, since when)
@@ -50,8 +39,7 @@ public class DonorLifestyleProfile implements Serializable{
 	private Tatoo tattoosOrPiercings; // (Yes/No, dateOfLastTattoo)
 	@Embedded
 	private SleepTime sleepPattern; // (Normal/Irregular, avg hours per day)
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
+
 	private DietType dietType; // (Veg/Non-Veg/Vegan/Other)
 
 	private String exerciseRoutine; //  (Regular/Occasional/Never)
@@ -59,12 +47,7 @@ public class DonorLifestyleProfile implements Serializable{
 	private Habits otherhabits; // (free text – e.g., chewing tobacco, medications)
 
 	private LocalDateTime lastUpdatedDate;
-
-	@OneToOne
-	@JoinColumn(name = "donor_id")
-	@JsonBackReference
-	private Donor donor;
-
-
+	
+	
 
 }

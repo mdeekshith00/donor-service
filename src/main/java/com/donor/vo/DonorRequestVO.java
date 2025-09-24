@@ -1,6 +1,5 @@
-package com.donor.entities;
+package com.donor.vo;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,52 +8,32 @@ import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
+import com.donor.entities.DonorHealthCheck;
+import com.donor.entities.DonorLifestyleProfile;
+import com.donor.entities.DonorRewards;
+import com.donor.entities.PreDonationCheckup;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Builder
 @Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "donor")
-public class Donor implements Serializable {
-
-		/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		@Column(name = "donor_id")
-		private Integer donorId;
-
-		@Enumerated(EnumType.STRING)
-		@Column(nullable = true)
-		private BloodGroupType bloodGroup;
-
-		@Enumerated(EnumType.STRING)
-		@Column(nullable = true)
-	    private DonationEligibilityStatus donationEligibilityStatus; // eligible, not eligible, pending approval
+public class DonorRequestVO {
+	@NotNull
+	 private Integer userId;
+	 @NotNull
+	 private BloodGroupType bloodGroup;
+	 
+	 private DonationEligibilityStatus donationEligibilityStatus; // eligible, not eligible, pending approval
 
 		private Boolean isAvailableToDonate;
 
@@ -76,8 +55,6 @@ public class Donor implements Serializable {
 
 		 private Boolean isVerified; // If user has passed eligibility verification
 		 
-		 @Enumerated(EnumType.STRING)
-		 @Column(nullable = true)
 		 private RegisterType registeredVia; // e.g., "app", "web", "camp"
 
 		 private Double weightInKg;
@@ -89,33 +66,19 @@ public class Donor implements Serializable {
 		 private LocalDateTime createdAt;
 
 		 private LocalDateTime updatedAt;
-		 @Enumerated(EnumType.STRING)
-		 @Column(nullable = true)
+
 		 private StatusType status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
 
-		 private Integer userId; // refering from user
-		 
 		 private String recentMedications;
 		 
 		 private String medicalConditions;
 
-		 @OneToMany(mappedBy = "donor")
-		 @JsonManagedReference
-		 private List<DonorHealthCheck> DonorHealthCheck;
+		 private List<DonorHealthCheckVO> DonorHealthCheck;
 
-		 @OneToOne(mappedBy = "donor")
-		 @JsonManagedReference
-		 private DonorLifestyleProfile donorLifestyleProfile;
+		 private DonorLifestyleProfileVO donorLifestyleProfile;
 
-		 @OneToMany(mappedBy = "donor")
-		 @JsonManagedReference
-		 private List<DonorRewards> donorRewards;
+		 private List<DonorRewardsVO> donorRewards;
 
-		 @OneToMany(mappedBy = "donor")
-		 @JsonBackReference
-		 private List<PreDonationCheckup> preDonationCheckup;
+		 private List<PreDonationCheckupVO> preDonationCheckup;
 
-	}
-
-
-
+}
