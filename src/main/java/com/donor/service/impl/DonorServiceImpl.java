@@ -1,7 +1,6 @@
 package com.donor.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,6 +16,9 @@ import com.common.exception.BloodBankBusinessException;
 import com.donor.dto.FullDonorResponseDto;
 import com.donor.entities.Donor;
 import com.donor.entities.DonorHealthCheck;
+import com.donor.entities.DonorLifestyleProfile;
+import com.donor.entities.DonorRewards;
+import com.donor.entities.PreDonationCheckup;
 import com.donor.repositary.DonorRepositary;
 import com.donor.service.DonorServcie;
 import com.donor.service.UserServiceClient;
@@ -34,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class DonorServiceImpl implements DonorServcie {
 	
 	private final DonorRepositary donorRepositary;
+//	private final Donor
 	private final UserServiceClient userServiceClient;
 	private final DonorUserCacheService donorUserCacheService;
 	
@@ -115,9 +118,78 @@ public class DonorServiceImpl implements DonorServcie {
 		Donor donor = donorRepositary.findByDonorIdAndIsActive(donorId, true).orElseThrow(() -> 
 		new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
 		
-		List<DonorHealthCheck> DonorHealthCheck = donor.getDonorHealthCheck();
+		DonorHealthCheck newCheck = DonorHealthCheck.builder()
+				.hemoglobinLevel(request.getDonorHealthCheck().getHemoglobinLevel())
+				.bloodPressureDiastolic(request.getDonorHealthCheck().getBloodPressureDiastolic())
+				.bloodPressureSystolic(request.getDonorHealthCheck().getBloodPressureSystolic())
+				.temperature(request.getDonorHealthCheck().getTemperature())
+				.pulseRate(request.getDonorHealthCheck().getPulseRate())
+				.medicalRemarks(request.getDonorHealthCheck().getMedicalRemarks())
+				.allergies(request.getDonorHealthCheck().getAllergies())
+				.weight(request.getDonorHealthCheck().getWeight())
+				.height(request.getDonorHealthCheck().getHeight())
+				.healthNotes(request.getDonorHealthCheck().getHealthNotes())
+				.screenedBy(request.getDonorHealthCheck().getScreenedBy())
+				.status(request.getDonorHealthCheck().getStatus())
+		        .build();
 		
-		return null;
+		DonorRewards newRewards =DonorRewards.builder()
+				.type(request.getDonorRewards().getType())
+				.title(request.getDonorRewards().getTitle())
+				.description(request.getDonorRewards().getDescription())
+				.issuedBy(request.getDonorRewards().getIssuedBy())
+				.expiryDate(request.getDonorRewards().getExpiryDate())
+				.status(request.getDonorRewards().getStatus())
+				.issuedBy(request.getDonorRewards().getIssuedBy())
+				.redeemedAt(request.getDonorRewards().getRedeemedAt())
+				.build();
+		PreDonationCheckup checkUp = PreDonationCheckup.builder()
+				.bloodPressure(request.getPreDonationCheckup().getBloodPressure())
+				.hemoglobinLevel(request.getPreDonationCheckup().getHemoglobinLevel())
+				.pulseRate(request.getPreDonationCheckup().getPulseRate())
+				.temperature(request.getPreDonationCheckup().getTemperature())
+				.weightAtDonation(request.getPreDonationCheckup().getWeightAtDonation())
+				.remarks(request.getPreDonationCheckup().getRemarks())
+				.checkedBy(request.getPreDonationCheckup().getCheckedBy())
+				.checkupDate(request.getPreDonationCheckup().getCheckupDate())
+				.build();
+		
+		DonorLifestyleProfile lifeStyle=   donor.getDonorLifestyleProfile();
+
+		Optional.ofNullable(request.getDonationEligibilityStatus()).ifPresent(donor::setDonationEligibilityStatus);
+		Optional.ofNullable(request.getIsAvailableToDonate()).ifPresent(donor::setIsAvailableToDonate);
+		Optional.ofNullable(request.getNextEligibleDate()).ifPresent(donor::setNextEligibleDate);
+		Optional.ofNullable(request.getTotalDonations()).ifPresent(donor::setTotalDonations);
+		Optional.ofNullable(request.getTotalUnitsDonated()).ifPresent(donor::setTotalUnitsDonated);
+		Optional.ofNullable(request.getIsEligibleToDonate()).ifPresent(donor::setIsEligibleToDonate);
+		Optional.ofNullable(request.getTemporarilyIneligibleUntil()).ifPresent(donor::setTemporarilyIneligibleUntil);
+		Optional.ofNullable(request.getRegisteredVia()).ifPresent(donor::setRegisteredVia);
+		Optional.ofNullable(request.getWeightInKg()).ifPresent(donor::setWeightInKg);
+		Optional.ofNullable(request.getHemoglobinLevel()).ifPresent(donor::setHemoglobinLevel);
+		Optional.ofNullable(request.getHasChronicDiseases()).ifPresent(donor::setHasChronicDiseases);
+		Optional.ofNullable(request.getStatus()).ifPresent(donor::setStatus);
+		Optional.ofNullable(request.getRecentMedications()).ifPresent(donor::setRecentMedications);
+		Optional.ofNullable(request.getMedicalConditions()).ifPresent(donor::setMedicalConditions);
+
+		donor.setUpdatedAt(LocalDateTime.now());
+		donor.getDonorHealthCheck().add(newCheck); 
+		donor.getDonorRewards().add(newRewards);
+		donor.setDonorLifestyleProfile(lifeStyle = DonorLifestyleProfile.builder()
+//				.smoking(request.getDonorLifestyleProfile().getSmoking())
+//				.alcoholConsumption(request.getDonorLifestyleProfile().getAlcoholConsumption())
+//		        .drugUse(request.getDonorLifestyleProfile().getDrugUse())
+//		        .tattoosOrPiercings(request.getDonorLifestyleProfile().getTattoosOrPiercings())
+//		        .sleepPattern(request.getDonorLifestyleProfile().getSleepPattern())
+//		        .dietType(request.getDonorLifestyleProfile().getDietType())
+		        .exerciseRoutine(request.getDonorLifestyleProfile().getExerciseRoutine())
+		        .otherhabits(request.getDonorLifestyleProfile().getOtherhabits())
+		        .lastUpdatedDate(LocalDateTime.now())
+				.build());
+		donor.getPreDonationCheckup().add(checkUp);
+		
+		donorRepositary.save(donor);
+		
+		return donorToFullDonorVO(donor);
 	}
 
 	@Override
@@ -126,6 +198,10 @@ public class DonorServiceImpl implements DonorServcie {
 		Donor donor = donorRepositary.findByDonorIdAndIsActive(donorId, true).orElseThrow(() -> 
 	        new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
 		
+		return donorToFullDonorVO(donor);
+
+	}
+	public static FullDonorResponseDto donorToFullDonorVO(Donor donor) {
 		return FullDonorResponseDto.builder()
 				.userId(donor.getUserId())
 				.bloodGroup(donor.getBloodGroup())
@@ -167,17 +243,17 @@ public class DonorServiceImpl implements DonorServcie {
                                  .build()
                          ).collect(Collectors.toList())
                     ) 
-//				.donorLifestyleProfile(DonorLifestyleProfileVO.builder()
-////						.smoking(donor.getDonorLifestyleProfile().getSmoking())
-////						.alcoholConsumption(donor.getDonorLifestyleProfile().getAlcoholConsumption())
-////						.drugUse(donor.getDonorLifestyleProfile().getDrugUse())
-////						.tattoosOrPiercings(donor.getDonorLifestyleProfile().getTattoosOrPiercings())
-//////						.dietType(donor.getDonorLifestyleProfile().getDietType())
-////						.exerciseRoutine(donor.getDonorLifestyleProfile().getExerciseRoutine())
-////						.otherhabits(donor.getDonorLifestyleProfile().getOtherhabits())
-////						.lastUpdatedDate(donor.getDonorLifestyleProfile().getLastUpdatedDate())
-//						.build()
-//						)
+				.donorLifestyleProfile(DonorLifestyleProfileVO.builder()
+						.smoking(donor.getDonorLifestyleProfile().getSmoking())
+						.alcoholConsumption(donor.getDonorLifestyleProfile().getAlcoholConsumption())
+						.drugUse(donor.getDonorLifestyleProfile().getDrugUse())
+						.tattoosOrPiercings(donor.getDonorLifestyleProfile().getTattoosOrPiercings())
+//						.dietType(donor.getDonorLifestyleProfile().getDietType())
+						.exerciseRoutine(donor.getDonorLifestyleProfile().getExerciseRoutine())
+						.otherhabits(donor.getDonorLifestyleProfile().getOtherhabits())
+						.lastUpdatedDate(donor.getDonorLifestyleProfile().getLastUpdatedDate())
+						.build()
+						)
 				.donorRewards(donor.getDonorRewards().stream().map(reward -> DonorRewardsVO.builder()
 						.type(reward.getType())
 						.title(reward.getTitle())
@@ -201,7 +277,6 @@ public class DonorServiceImpl implements DonorServcie {
 						).collect(Collectors.toList())
 						)
 				.build();
-
 	}
 
 }

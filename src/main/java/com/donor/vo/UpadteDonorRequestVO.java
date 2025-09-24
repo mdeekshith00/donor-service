@@ -10,18 +10,18 @@ import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UpadteDonorRequestVO {
-	@NotNull
-	 private Integer userId;
-	 @NotNull
-	 private BloodGroupType bloodGroup;
 	 
 	 private DonationEligibilityStatus donationEligibilityStatus; // eligible, not eligible, pending approval
 
@@ -63,12 +63,13 @@ public class UpadteDonorRequestVO {
 		 
 		 private String medicalConditions;
 
-		 private DonorHealthCheckVO DonorHealthCheck;
+		 private DonorHealthCheckVO donorHealthCheck;
 
 		 private DonorLifestyleProfileVO donorLifestyleProfile;
 
 		 private DonorRewardsVO donorRewards;
 
 		 private PreDonationCheckupVO preDonationCheckup;
+
 
 }
