@@ -3,13 +3,13 @@ package com.donor.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -17,6 +17,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -99,23 +100,23 @@ public class Donor implements Serializable {
 		 
 		 private String medicalConditions;
 
-		 @OneToMany(mappedBy = "donor")
+
+	    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 		 @JsonManagedReference
-		 private List<DonorHealthCheck> DonorHealthCheck;
+		 private List<DonorHealthCheck> DonorHealthCheck = new ArrayList<>();
 
 		 @OneToOne(mappedBy = "donor")
 		 @JsonManagedReference
 		 private DonorLifestyleProfile donorLifestyleProfile;
 
-		 @OneToMany(mappedBy = "donor")
+		 @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
 		 @JsonManagedReference
-		 private List<DonorRewards> donorRewards;
+		 private List<DonorRewards> donorRewards = new ArrayList<>();
 
-		 @OneToMany(mappedBy = "donor")
-		 @JsonBackReference
-		 private List<PreDonationCheckup> preDonationCheckup;
-
-	}
+		 @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
+		 @JsonManagedReference
+		 private List<BloodTestResult> bloodTestResults = new ArrayList<>();
+}
 
 
 

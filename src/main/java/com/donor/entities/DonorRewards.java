@@ -64,7 +64,7 @@ public class DonorRewards implements Serializable{
 
 	private String redeemedAt ; //  if coupon/voucher, store partner/vendor.
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "donor_id")
 	@JsonBackReference
 	private Donor donor;

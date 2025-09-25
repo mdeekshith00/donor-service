@@ -18,15 +18,12 @@ import com.donor.entities.Donor;
 import com.donor.entities.DonorHealthCheck;
 import com.donor.entities.DonorLifestyleProfile;
 import com.donor.entities.DonorRewards;
-import com.donor.entities.PreDonationCheckup;
 import com.donor.repositary.DonorRepositary;
 import com.donor.service.DonorServcie;
 import com.donor.service.UserServiceClient;
 import com.donor.vo.DonorHealthCheckVO;
-import com.donor.vo.DonorLifestyleProfileVO;
 import com.donor.vo.DonorRequestVO;
 import com.donor.vo.DonorRewardsVO;
-import com.donor.vo.PreDonationCheckupVO;
 import com.donor.vo.UpadteDonorRequestVO;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 public class DonorServiceImpl implements DonorServcie {
 	
 	private final DonorRepositary donorRepositary;
-//	private final Donor
 	private final UserServiceClient userServiceClient;
 	private final DonorUserCacheService donorUserCacheService;
 	
@@ -143,16 +139,6 @@ public class DonorServiceImpl implements DonorServcie {
 				.issuedBy(request.getDonorRewards().getIssuedBy())
 				.redeemedAt(request.getDonorRewards().getRedeemedAt())
 				.build();
-		PreDonationCheckup checkUp = PreDonationCheckup.builder()
-				.bloodPressure(request.getPreDonationCheckup().getBloodPressure())
-				.hemoglobinLevel(request.getPreDonationCheckup().getHemoglobinLevel())
-				.pulseRate(request.getPreDonationCheckup().getPulseRate())
-				.temperature(request.getPreDonationCheckup().getTemperature())
-				.weightAtDonation(request.getPreDonationCheckup().getWeightAtDonation())
-				.remarks(request.getPreDonationCheckup().getRemarks())
-				.checkedBy(request.getPreDonationCheckup().getCheckedBy())
-				.checkupDate(request.getPreDonationCheckup().getCheckupDate())
-				.build();
 		
 		DonorLifestyleProfile lifeStyle=   donor.getDonorLifestyleProfile();
 
@@ -174,19 +160,7 @@ public class DonorServiceImpl implements DonorServcie {
 		donor.setUpdatedAt(LocalDateTime.now());
 		donor.getDonorHealthCheck().add(newCheck); 
 		donor.getDonorRewards().add(newRewards);
-		donor.setDonorLifestyleProfile(lifeStyle = DonorLifestyleProfile.builder()
-//				.smoking(request.getDonorLifestyleProfile().getSmoking())
-//				.alcoholConsumption(request.getDonorLifestyleProfile().getAlcoholConsumption())
-//		        .drugUse(request.getDonorLifestyleProfile().getDrugUse())
-//		        .tattoosOrPiercings(request.getDonorLifestyleProfile().getTattoosOrPiercings())
-//		        .sleepPattern(request.getDonorLifestyleProfile().getSleepPattern())
-//		        .dietType(request.getDonorLifestyleProfile().getDietType())
-		        .exerciseRoutine(request.getDonorLifestyleProfile().getExerciseRoutine())
-		        .otherhabits(request.getDonorLifestyleProfile().getOtherhabits())
-		        .lastUpdatedDate(LocalDateTime.now())
-				.build());
-		donor.getPreDonationCheckup().add(checkUp);
-		
+	
 		donorRepositary.save(donor);
 		
 		return donorToFullDonorVO(donor);
@@ -243,17 +217,6 @@ public class DonorServiceImpl implements DonorServcie {
                                  .build()
                          ).collect(Collectors.toList())
                     ) 
-				.donorLifestyleProfile(DonorLifestyleProfileVO.builder()
-						.smoking(donor.getDonorLifestyleProfile().getSmoking())
-						.alcoholConsumption(donor.getDonorLifestyleProfile().getAlcoholConsumption())
-						.drugUse(donor.getDonorLifestyleProfile().getDrugUse())
-						.tattoosOrPiercings(donor.getDonorLifestyleProfile().getTattoosOrPiercings())
-//						.dietType(donor.getDonorLifestyleProfile().getDietType())
-						.exerciseRoutine(donor.getDonorLifestyleProfile().getExerciseRoutine())
-						.otherhabits(donor.getDonorLifestyleProfile().getOtherhabits())
-						.lastUpdatedDate(donor.getDonorLifestyleProfile().getLastUpdatedDate())
-						.build()
-						)
 				.donorRewards(donor.getDonorRewards().stream().map(reward -> DonorRewardsVO.builder()
 						.type(reward.getType())
 						.title(reward.getTitle())
@@ -265,17 +228,7 @@ public class DonorServiceImpl implements DonorServcie {
 						.build()
 						).collect(Collectors.toList())
 						)
-				.preDonationCheckup(donor.getPreDonationCheckup().stream().map(checkup -> PreDonationCheckupVO.builder()
-						.bloodPressure(checkup.getBloodPressure())
-						.hemoglobinLevel(checkup.getHemoglobinLevel())
-						.pulseRate(checkup.getPulseRate())
-						.weightAtDonation(checkup.getWeightAtDonation())
-						.remarks(checkup.getRemarks())
-						.checkedBy(checkup.getCheckedBy())
-						.checkupDate(checkup.getCheckupDate())
-						.build()
-						).collect(Collectors.toList())
-						)
+
 				.build();
 	}
 

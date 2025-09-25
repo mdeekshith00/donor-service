@@ -78,7 +78,7 @@ public class DonorHealthCheck implements Serializable{
 	@Column(nullable = true)
     private StatusType status; //  ENUM: PASSED, FAILED, RECHECK_REQUIRED)
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "donor_id")
     @JsonBackReference
     private Donor donor;

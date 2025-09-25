@@ -69,7 +69,5 @@ public class UpadteDonorRequestVO {
 
 		 private DonorRewardsVO donorRewards;
 
-		 private PreDonationCheckupVO preDonationCheckup;
-
 
 }

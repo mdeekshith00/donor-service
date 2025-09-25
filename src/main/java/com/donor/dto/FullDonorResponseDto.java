@@ -10,11 +10,8 @@ import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
 import com.donor.vo.DonorHealthCheckVO;
 import com.donor.vo.DonorLifestyleProfileVO;
-import com.donor.vo.DonorRequestVO;
 import com.donor.vo.DonorRewardsVO;
-import com.donor.vo.PreDonationCheckupVO;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,8 +70,5 @@ public class FullDonorResponseDto {
 		 private DonorLifestyleProfileVO donorLifestyleProfile;
 
 		 private List<DonorRewardsVO> donorRewards;
-
-		 private List<PreDonationCheckupVO> preDonationCheckup;
-
 
 }
