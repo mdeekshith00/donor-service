@@ -91,21 +91,20 @@ public class Donor implements Serializable {
 
 		 private LocalDateTime updatedAt;
 		 @Enumerated(EnumType.STRING)
-		 @Column(nullable = true)
+		 @Column
 		 private StatusType status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
-
+         @Column(unique = true, nullable = false)
 		 private Integer userId; // refering from user
 		 
 		 private String recentMedications;
 		 
 		 private String medicalConditions;
 
-
-	    @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 		 @JsonManagedReference
 		 private List<DonorHealthCheck> DonorHealthCheck = new ArrayList<>();
 
-		 @OneToOne(mappedBy = "donor")
+		 @OneToOne(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 		 @JsonManagedReference
 		 private DonorLifestyleProfile donorLifestyleProfile;
 
@@ -113,9 +112,7 @@ public class Donor implements Serializable {
 		 @JsonManagedReference
 		 private List<DonorRewards> donorRewards = new ArrayList<>();
 
-		 @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
-		 @JsonManagedReference
-		 private List<BloodTestResult> bloodTestResults = new ArrayList<>();
+
 }
 
 

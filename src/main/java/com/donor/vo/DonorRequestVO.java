@@ -27,6 +27,7 @@ public class DonorRequestVO {
 		private Boolean isAvailableToDonate;
 
 	    private LocalDate lastDonationDate;
+	    
 
 		 private LocalDate nextEligibleDate;
 

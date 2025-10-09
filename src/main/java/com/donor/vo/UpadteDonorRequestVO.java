@@ -2,14 +2,12 @@ package com.donor.vo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,14 +20,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpadteDonorRequestVO {
+	
+	   private BloodGroupType bloodGroup;
 	 
 	 private DonationEligibilityStatus donationEligibilityStatus; // eligible, not eligible, pending approval
 
 		private Boolean isAvailableToDonate;
-
-	    private LocalDate lastDonationDate;
-
-		 private LocalDate nextEligibleDate;
 
 		 private Integer totalDonations;
 

@@ -1,9 +1,10 @@
 package com.donor.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,26 +19,35 @@ import com.donor.entities.Donor;
 import com.donor.entities.DonorHealthCheck;
 import com.donor.entities.DonorLifestyleProfile;
 import com.donor.entities.DonorRewards;
+import com.donor.mapper.MapperHelper;
+import com.donor.repositary.DonorHealthCheckRepositary;
+import com.donor.repositary.DonorLifestyleProfileRepositary;
 import com.donor.repositary.DonorRepositary;
+import com.donor.repositary.DonorRewardsRepositary;
 import com.donor.service.DonorServcie;
 import com.donor.service.UserServiceClient;
-import com.donor.vo.DonorHealthCheckVO;
 import com.donor.vo.DonorRequestVO;
-import com.donor.vo.DonorRewardsVO;
 import com.donor.vo.UpadteDonorRequestVO;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DonorServiceImpl implements DonorServcie {
 	
 	private final DonorRepositary donorRepositary;
 	private final UserServiceClient userServiceClient;
 	private final DonorUserCacheService donorUserCacheService;
+	private final DonorHealthCheckRepositary DonarHealthCheckRepositary; 
+	private final DonorLifestyleProfileRepositary DonorLifestyleProfileRepositary;
+	private final DonorRewardsRepositary DonorRewardsRepositary;
+	private final MapperHelper mapperHelper;
+
 	
     public DonorResponseDto getUserDetails(Integer userId) {
-        // 1. Check cache
     	DonorResponseDto user = donorUserCacheService.getUserById(userId)
     	        .orElseGet(() -> {
     	            // If not in cache, call user-service
@@ -55,7 +65,7 @@ public class DonorServiceImpl implements DonorServcie {
 		// TODO Auto-generated method stub
 		  Optional<Donor> existingDonor = donorRepositary.findById(request.getUserId());
 	        if (existingDonor.isPresent()) {
-	            return DonorToVO(existingDonor.get());
+	        	return mapperHelper.DonorToVO(existingDonor.get());
 	        }
 
 	        // 2. If not in donor DB, check cache
@@ -84,86 +94,109 @@ public class DonorServiceImpl implements DonorServcie {
 	        donor.setUserId(request.getUserId());
 	        donor.setCreatedAt(LocalDateTime.now());
 	        donor.setUpdatedAt(LocalDateTime.now());
-	        donor.setDonationEligibilityStatus(DonationEligibilityStatus.PEDING_APPROVAL);
+	        donor.setDonationEligibilityStatus(DonationEligibilityStatus.ELIGIBLE);
 	        donor.setRegisteredVia(RegisterType.APP);
 	        donor.setStatus(StatusType.ACTIVE);
 	        
 	        donor = donorRepositary.save(donor);
 	        
-	        return DonorToVO(donor);
+	        return mapperHelper.DonorToVO(donor);
 	}
 	
-	public FullDonorResponseDto DonorToVO(Donor donor) {
-	return FullDonorResponseDto.builder()
-        		.userId(donor.getUserId())
-        		.bloodGroup(donor.getBloodGroup())
-        		.isAvailableToDonate(donor.getIsAvailableToDonate())
-        		.totalDonations(donor.getTotalDonations())
-        		.totalUnitsDonated(donor.getTotalUnitsDonated())
-        		.isEligibleToDonate(donor.getIsEligibleToDonate())
-        		.recentMedications(donor.getRecentMedications())
-        		.medicalConditions(donor.getMedicalConditions())
-        		.weightInKg(donor.getWeightInKg())
-        		.build();
-		
-	}
+
 
 	@Override
 	public FullDonorResponseDto updateDonorDetails(Integer donorId , UpadteDonorRequestVO request) {
 		// TODO Auto-generated method stub
 		Donor donor = donorRepositary.findByDonorIdAndIsActive(donorId, true).orElseThrow(() -> 
 		new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
-		
-		DonorHealthCheck newCheck = DonorHealthCheck.builder()
-				.hemoglobinLevel(request.getDonorHealthCheck().getHemoglobinLevel())
-				.bloodPressureDiastolic(request.getDonorHealthCheck().getBloodPressureDiastolic())
-				.bloodPressureSystolic(request.getDonorHealthCheck().getBloodPressureSystolic())
-				.temperature(request.getDonorHealthCheck().getTemperature())
-				.pulseRate(request.getDonorHealthCheck().getPulseRate())
-				.medicalRemarks(request.getDonorHealthCheck().getMedicalRemarks())
-				.allergies(request.getDonorHealthCheck().getAllergies())
-				.weight(request.getDonorHealthCheck().getWeight())
-				.height(request.getDonorHealthCheck().getHeight())
-				.healthNotes(request.getDonorHealthCheck().getHealthNotes())
-				.screenedBy(request.getDonorHealthCheck().getScreenedBy())
-				.status(request.getDonorHealthCheck().getStatus())
-		        .build();
-		
-		DonorRewards newRewards =DonorRewards.builder()
-				.type(request.getDonorRewards().getType())
-				.title(request.getDonorRewards().getTitle())
-				.description(request.getDonorRewards().getDescription())
-				.issuedBy(request.getDonorRewards().getIssuedBy())
-				.expiryDate(request.getDonorRewards().getExpiryDate())
-				.status(request.getDonorRewards().getStatus())
-				.issuedBy(request.getDonorRewards().getIssuedBy())
-				.redeemedAt(request.getDonorRewards().getRedeemedAt())
-				.build();
-		
-		DonorLifestyleProfile lifeStyle=   donor.getDonorLifestyleProfile();
 
-		Optional.ofNullable(request.getDonationEligibilityStatus()).ifPresent(donor::setDonationEligibilityStatus);
-		Optional.ofNullable(request.getIsAvailableToDonate()).ifPresent(donor::setIsAvailableToDonate);
-		Optional.ofNullable(request.getNextEligibleDate()).ifPresent(donor::setNextEligibleDate);
-		Optional.ofNullable(request.getTotalDonations()).ifPresent(donor::setTotalDonations);
-		Optional.ofNullable(request.getTotalUnitsDonated()).ifPresent(donor::setTotalUnitsDonated);
-		Optional.ofNullable(request.getIsEligibleToDonate()).ifPresent(donor::setIsEligibleToDonate);
-		Optional.ofNullable(request.getTemporarilyIneligibleUntil()).ifPresent(donor::setTemporarilyIneligibleUntil);
-		Optional.ofNullable(request.getRegisteredVia()).ifPresent(donor::setRegisteredVia);
-		Optional.ofNullable(request.getWeightInKg()).ifPresent(donor::setWeightInKg);
-		Optional.ofNullable(request.getHemoglobinLevel()).ifPresent(donor::setHemoglobinLevel);
-		Optional.ofNullable(request.getHasChronicDiseases()).ifPresent(donor::setHasChronicDiseases);
-		Optional.ofNullable(request.getStatus()).ifPresent(donor::setStatus);
-		Optional.ofNullable(request.getRecentMedications()).ifPresent(donor::setRecentMedications);
-		Optional.ofNullable(request.getMedicalConditions()).ifPresent(donor::setMedicalConditions);
-
-		donor.setUpdatedAt(LocalDateTime.now());
-		donor.getDonorHealthCheck().add(newCheck); 
-		donor.getDonorRewards().add(newRewards);
-	
-		donorRepositary.save(donor);
 		
-		return donorToFullDonorVO(donor);
+		Optional.ofNullable(request.getDonorHealthCheck()).ifPresent(checkRequest -> {
+	        DonorHealthCheck newCheck = DonorHealthCheck.builder()
+	                .hemoglobinLevel(checkRequest.getHemoglobinLevel())
+	                .bloodPressureDiastolic(checkRequest.getBloodPressureDiastolic())
+	                .bloodPressureSystolic(checkRequest.getBloodPressureSystolic())
+	                .temperature(checkRequest.getTemperature())
+	                .pulseRate(checkRequest.getPulseRate())
+	                .medicalRemarks(checkRequest.getMedicalRemarks())
+	                .allergies(checkRequest.getAllergies())
+	                .weight(checkRequest.getWeight())
+	                .height(checkRequest.getHeight())
+	                .healthNotes(checkRequest.getHealthNotes())
+	                .screenedBy(checkRequest.getScreenedBy())
+	                .status(checkRequest.getStatus())
+	                .donor(donor)
+	                .build();
+
+	        DonarHealthCheckRepositary.save(newCheck);
+
+//	        if (donor.getDonorHealthCheck() == null) {
+//	            donor.setDonorHealthCheck(new HashSet<>());
+//	        }
+	        donor.getDonorHealthCheck().add(newCheck);
+	    });
+
+	    // 3️⃣ Handle DonorRewards (optional)
+	    Optional.ofNullable(request.getDonorRewards()).ifPresent(rewardRequest -> {
+	        DonorRewards newReward = DonorRewards.builder()
+	                .type(rewardRequest.getType())
+	                .title(rewardRequest.getTitle())
+	                .description(rewardRequest.getDescription())
+	                .issuedBy(rewardRequest.getIssuedBy())
+	                .expiryDate(rewardRequest.getExpiryDate())
+	                .status(rewardRequest.getStatus())
+	                .redeemedAt(rewardRequest.getRedeemedAt())
+	                .donor(donor)
+	                .build();
+
+	        DonorRewardsRepositary.save(newReward);
+
+//	        if (donor.getDonorRewards() == null) {
+//	            donor.setDonorRewards(new HashSet<>());
+//	        }
+	        donor.getDonorRewards().add(newReward);
+	    });
+
+	    // 4️⃣ Handle DonorLifestyleProfile (optional)
+	    Optional.ofNullable(request.getDonorLifestyleProfile()).ifPresent(lifestyleRequest -> {
+	        DonorLifestyleProfile lifeStyle = donor.getDonorLifestyleProfile();
+	        if (lifeStyle == null) {
+	            lifeStyle = new DonorLifestyleProfile();
+	            lifeStyle.setDonor(donor);
+	        }
+	        lifeStyle.setDietType(lifestyleRequest.getDietType());
+	        lifeStyle.setExerciseRoutine(lifestyleRequest.getExerciseRoutine());
+	        lifeStyle.setAlcoholConsumption(lifestyleRequest.getAlcoholConsumption());
+	        lifeStyle.setSmoking(lifestyleRequest.getSmoking());
+	        lifeStyle.setSleepPattern(lifestyleRequest.getSleepPattern());
+//	        lifeStyle.setHabits(lifestyleRequest.getHabits());
+	        lifeStyle.setOtherHabitsDetails(lifestyleRequest.getOtherHabitsDetails());
+	        lifeStyle.setTattoosOrPiercings(lifestyleRequest.getTattoosOrPiercings());
+
+	        DonorLifestyleProfileRepositary.save(lifeStyle);
+	        donor.setDonorLifestyleProfile(lifeStyle);
+	    });
+
+	    // 5️⃣ Update basic donor fields safely
+	    Optional.ofNullable(request.getDonationEligibilityStatus()).ifPresent(donor::setDonationEligibilityStatus);
+	    Optional.ofNullable(request.getTotalDonations()).ifPresent(donor::setTotalDonations);
+	    Optional.ofNullable(request.getTotalUnitsDonated()).ifPresent(donor::setTotalUnitsDonated);
+	    Optional.ofNullable(request.getIsEligibleToDonate()).ifPresent(donor::setIsEligibleToDonate);
+	    Optional.ofNullable(request.getTemporarilyIneligibleUntil()).ifPresent(donor::setTemporarilyIneligibleUntil);
+	    Optional.ofNullable(request.getRegisteredVia()).ifPresent(donor::setRegisteredVia);
+	    Optional.ofNullable(request.getWeightInKg()).ifPresent(donor::setWeightInKg);
+	    Optional.ofNullable(request.getHemoglobinLevel()).ifPresent(donor::setHemoglobinLevel);
+	    Optional.ofNullable(request.getHasChronicDiseases()).ifPresent(donor::setHasChronicDiseases);
+	    Optional.ofNullable(request.getStatus()).ifPresent(donor::setStatus);
+	    Optional.ofNullable(request.getRecentMedications()).ifPresent(donor::setRecentMedications);
+	    Optional.ofNullable(request.getMedicalConditions()).ifPresent(donor::setMedicalConditions);
+
+	    donor.setUpdatedAt(LocalDateTime.now());
+
+	    donorRepositary.save(donor);
+
+	    return mapperHelper.donorToFullDonorVO(donor);
 	}
 
 	@Override
@@ -171,65 +204,27 @@ public class DonorServiceImpl implements DonorServcie {
 		// TODO Auto-generated method stub
 		Donor donor = donorRepositary.findByDonorIdAndIsActive(donorId, true).orElseThrow(() -> 
 	        new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
-		
-		return donorToFullDonorVO(donor);
+		return mapperHelper.donorToFullDonorVO(donor);
 
 	}
-	public static FullDonorResponseDto donorToFullDonorVO(Donor donor) {
-		return FullDonorResponseDto.builder()
-				.userId(donor.getUserId())
-				.bloodGroup(donor.getBloodGroup())
-				.donationEligibilityStatus(donor.getDonationEligibilityStatus())
-				.isAvailableToDonate(donor.getIsAvailableToDonate())
-				.lastDonationDate(donor.getLastDonationDate())
-				.nextEligibleDate(donor.getNextEligibleDate())
-				.totalDonations(donor.getTotalDonations())
-				.totalUnitsDonated(donor.getTotalUnitsDonated())
-				.isEligibleToDonate(donor.getIsEligibleToDonate())
-				.ineligibilityReason(donor.getIneligibilityReason())
-				.temporarilyIneligibleUntil(donor.getTemporarilyIneligibleUntil())
-				.isActive(donor.getIsActive())
-				.isVerified(donor.getIsVerified())
-				.registeredVia(donor.getRegisteredVia())
-				.weightInKg(donor.getWeightInKg())
-				.hemoglobinLevel(donor.getHemoglobinLevel())
-				.hasChronicDiseases(donor.getHasChronicDiseases())
-				.createdAt(donor.getCreatedAt())
-				.updatedAt(donor.getUpdatedAt())
-				.status(donor.getStatus())
-				.recentMedications(donor.getRecentMedications())
-				.medicalConditions(donor.getMedicalConditions())
-				.donorHealthCheck(
-						 donor.getDonorHealthCheck().stream()
-                         .map(health -> DonorHealthCheckVO.builder()
-                                 .hemoglobinLevel(health.getHemoglobinLevel())
-                                 .bloodPressureSystolic(health.getBloodPressureSystolic())
-                                 .bloodPressureDiastolic(health.getBloodPressureDiastolic())
-                                 .temperature(health.getTemperature())
-                                 .pulseRate(health.getPulseRate())
-                                 .medicalRemarks(health.getMedicalRemarks())
-                                 .allergies(health.getAllergies())
-                                 .weight(health.getWeight())
-                                 .height(health.getHeight())
-                                 .healthNotes(health.getHealthNotes())
-                                 .screenedBy(health.getScreenedBy())
-                                 .status(health.getStatus())
-                                 .build()
-                         ).collect(Collectors.toList())
-                    ) 
-				.donorRewards(donor.getDonorRewards().stream().map(reward -> DonorRewardsVO.builder()
-						.type(reward.getType())
-						.title(reward.getTitle())
-						.issuedDate(reward.getIssuedDate())
-						.expiryDate(reward.getExpiryDate())
-						.status(reward.getStatus())
-						.issuedBy(reward.getIssuedBy())
-						.redeemedAt(reward.getRedeemedAt())
-						.build()
-						).collect(Collectors.toList())
-						)
 
-				.build();
-	}
+    @Transactional
+    public Donor createIfNotExists(Integer userId) {
+        return donorRepositary.findByUserId(userId).orElseGet(() -> {
+            try {
+                Donor d = Donor.builder()
+                        .userId(userId)
+                        .isActive(true)
+                        .status(StatusType.ACTIVE)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .build();
+                return donorRepositary.save(d);
+            } catch (DataIntegrityViolationException ex) {
+                // race: another process inserted; fetch existing
+                return donorRepositary.findByUserId(userId).orElseThrow(() -> ex);
+            }
+        });
+    }
 
 }
