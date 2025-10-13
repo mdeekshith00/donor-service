@@ -1,13 +1,17 @@
 package com.donor.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import com.common.enums.CERTIFICATETYPE;
 import com.common.enums.StatusType;
-import com.donor.enums.CERTIFICATETYPE;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -63,6 +67,11 @@ public class DonorRewards implements Serializable{
 	private String issuedBy ; // (userId → Admin who issued OR system automation).
 
 	private String redeemedAt ; //  if coupon/voucher, store partner/vendor.
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "donor_id")

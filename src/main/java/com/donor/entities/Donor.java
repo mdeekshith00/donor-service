@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
@@ -48,10 +51,8 @@ public class Donor implements Serializable {
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		@Column(name = "donor_id")
 		private Integer donorId;
-
-		@Enumerated(EnumType.STRING)
-		@Column(nullable = true)
-		private BloodGroupType bloodGroup;
+ 
+		private String bloodGroup;
 
 		@Enumerated(EnumType.STRING)
 		@Column(nullable = true)
@@ -65,7 +66,7 @@ public class Donor implements Serializable {
 
 		 private Integer totalDonations;
 
-		 private Integer totalUnitsDonated;
+		 private Integer totalUnitsDonated;  // 1 unit = ~450 ml of blood.
 
 		 private Boolean isEligibleToDonate;
 
@@ -87,8 +88,10 @@ public class Donor implements Serializable {
 
 		 private Boolean hasChronicDiseases;   // e.g., diabetes, hypertension
 
+		 @CreatedDate
 		 private LocalDateTime createdAt;
 
+		 @LastModifiedDate
 		 private LocalDateTime updatedAt;
 		 @Enumerated(EnumType.STRING)
 		 @Column

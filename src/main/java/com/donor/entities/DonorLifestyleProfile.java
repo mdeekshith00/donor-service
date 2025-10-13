@@ -1,7 +1,11 @@
 package com.donor.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import com.donor.enums.DietType;
 import com.donor.enums.HabitsType;
@@ -10,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,7 +45,7 @@ public class DonorLifestyleProfile implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_lifestyle_profile_id")
-	private Integer DonorLifestyleProfile;
+	private Integer DonorLifestyleProfileId;
     @Column
     private Boolean smoking;
     @Column
@@ -68,8 +71,11 @@ public class DonorLifestyleProfile implements Serializable{
     
     @Column(length = 200)
     private String otherHabitsDetails; // Free text for habits not in enum
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-	private LocalDateTime lastUpdatedDate;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
 	@OneToOne
 	@JoinColumn(name = "donor_id")

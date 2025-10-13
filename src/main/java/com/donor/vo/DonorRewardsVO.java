@@ -2,8 +2,8 @@ package com.donor.vo;
 
 import java.time.LocalDate;
 
+import com.common.enums.CERTIFICATETYPE;
 import com.common.enums.StatusType;
-import com.donor.enums.CERTIFICATETYPE;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;

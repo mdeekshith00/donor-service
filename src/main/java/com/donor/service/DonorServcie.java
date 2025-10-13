@@ -1,5 +1,7 @@
 package com.donor.service;
 
+import com.common.dto.DonationResponseDto;
+import com.common.vo.DonationRequestVO;
 import com.donor.dto.FullDonorResponseDto;
 import com.donor.entities.Donor;
 import com.donor.vo.DonorRequestVO;
@@ -11,6 +13,7 @@ public interface DonorServcie {
 	public FullDonorResponseDto getDonorDeatils(Integer donorId);
 	public FullDonorResponseDto updateDonorDetails(Integer donorId , UpadteDonorRequestVO request);
 	public Donor createIfNotExists(Integer userId);
+    public DonationResponseDto validateDonateBlood(Integer donorId,  DonationRequestVO donationRequest);
 
 
 }

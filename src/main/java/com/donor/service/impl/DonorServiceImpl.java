@@ -1,19 +1,24 @@
 package com.donor.service.impl;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.common.constants.ErrorConstants;
+import com.common.dto.DonationResponseDto;
 import com.common.dto.DonorResponseDto;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
 import com.common.exception.BloodBankBusinessException;
+import com.common.vo.DonationRequestVO;
 import com.donor.dto.FullDonorResponseDto;
 import com.donor.entities.Donor;
 import com.donor.entities.DonorHealthCheck;
@@ -45,6 +50,7 @@ public class DonorServiceImpl implements DonorServcie {
 	private final DonorLifestyleProfileRepositary DonorLifestyleProfileRepositary;
 	private final DonorRewardsRepositary DonorRewardsRepositary;
 	private final MapperHelper mapperHelper;
+	private final DonationService donationService;
 
 	
     public DonorResponseDto getUserDetails(Integer userId) {
@@ -81,7 +87,7 @@ public class DonorServiceImpl implements DonorServcie {
 
 	        Donor donor = new Donor();
 	   
-	        Optional.ofNullable(request.getBloodGroup()).ifPresent(donor::setBloodGroup);
+//	        Optional.ofNullable(request.getBloodGroup()).map(enum::String).ifPresent(donor::setBloodGroup);
 	        Optional.ofNullable(request.getIsAvailableToDonate()).ifPresent(donor::setIsAvailableToDonate);
 	        Optional.ofNullable(request.getTotalDonations()).ifPresent(donor::setTotalDonations);
 	        Optional.ofNullable(request.getTotalUnitsDonated()).ifPresent(donor::setTotalUnitsDonated);
@@ -92,8 +98,6 @@ public class DonorServiceImpl implements DonorServcie {
 	        
 	        donor.setIsActive(true);
 	        donor.setUserId(request.getUserId());
-	        donor.setCreatedAt(LocalDateTime.now());
-	        donor.setUpdatedAt(LocalDateTime.now());
 	        donor.setDonationEligibilityStatus(DonationEligibilityStatus.ELIGIBLE);
 	        donor.setRegisteredVia(RegisterType.APP);
 	        donor.setStatus(StatusType.ACTIVE);
@@ -209,7 +213,7 @@ public class DonorServiceImpl implements DonorServcie {
 	}
 
     @Transactional
-    public Donor createIfNotExists(Integer userId) {
+    public Donor createIfNotExists(Integer userId ) {
         return donorRepositary.findByUserId(userId).orElseGet(() -> {
             try {
                 Donor d = Donor.builder()
@@ -226,5 +230,31 @@ public class DonorServiceImpl implements DonorServcie {
             }
         });
     }
+
+	@Override
+	public DonationResponseDto validateDonateBlood(Integer donorId, DonationRequestVO donationRequest) {
+		// TODO Auto-generated method stub
+		Donor donor = donorRepositary.findByDonorIdAndIsActiveAndDonationEligibilityStatusAndIsEligibleToDonateAndIsVerified(donorId, true ,DonationEligibilityStatus.ELIGIBLE,true,true)
+				.orElseThrow(() -> new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
+		
+		if(donationRequest.getVolume() == null && donationRequest.getVolume().equalsIgnoreCase("0")) {
+			throw new BloodBankBusinessException(ErrorConstants.DONOTATION_SHOULD_NOT_BE_NULL ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA);
+		}
+		if(donationRequest.getBloodGroup() != null) {
+			donor.setBloodGroup(donationRequest.getBloodGroup().toString());
+			donorRepositary.save(donor);
+		}
+
+		DonationResponseDto responseDto =  DonationResponseDto.builder()
+				.bloodGroup(null)
+				.donorId(donor.getDonorId())
+				.eventId(Integer.valueOf(UUID.randomUUID().toString()))
+				.volume(donationRequest.getVolume())
+				.build();
+		
+		donationService.notifyDonationServiceAsync(donationRequest);
+		
+		return responseDto;
+	}
 
 }
