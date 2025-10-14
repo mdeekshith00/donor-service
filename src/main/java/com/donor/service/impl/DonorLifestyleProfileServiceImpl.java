@@ -43,20 +43,22 @@ public class DonorLifestyleProfileServiceImpl implements DonorLifestyleProfileSe
         new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND ,HttpStatus.BAD_REQUEST,ErrorConstants.INVALID_DATA));
 	
 		DonorLifestyleProfile profile = null;
-		if(donorLifestyleProfileVO.getDonorLifestyleProfileId() == null) {
-			 profile = new DonorLifestyleProfile();
-			profile.setCreatedAt(LocalDateTime.now());
-			mapperHelper.addorUpdateDonorLifeStyle(profile, donorLifestyleProfileVO);
-	     	profile.setDonor(donor);
-		    donorLifestyleProfileRepositary.save(profile);
-		    return   mapperHelper.lifeStleToLifeStyleDto(profile);
-		}else {
+		if(donorLifestyleProfileVO.getDonorLifestyleProfileId() != null) {
 			 profile = 	donorLifestyleProfileRepositary.findByDonorLifestyleProfileId(donorLifestyleProfileVO.getDonorLifestyleProfileId())
 					 .orElseThrow(() -> new BloodBankBusinessException(ErrorConstants.DONOR_LIFETSTYLE_PROFILE_DETAILS_NOT_FOUND , HttpStatus.BAD_REQUEST , ErrorConstants.DATA_NOT_FOUND));
-			mapperHelper.addorUpdateDonorLifeStyle(profile, donorLifestyleProfileVO);
+			 profile =  mapperHelper.addorUpdateDonorLifeStyle(profile ,donorLifestyleProfileVO);
+		}
+			profile = new DonorLifestyleProfile();
+			profile.setCreatedAt(LocalDateTime.now());
+			profile =  mapperHelper.addorUpdateDonorLifeStyle(profile ,donorLifestyleProfileVO);
+	     	profile.setDonor(donor);
+	     	
+		     profile =  donorLifestyleProfileRepositary.save(profile);
+
 			donorLifestyleProfileRepositary.save(profile);
 			 return  mapperHelper.lifeStleToLifeStyleDto(profile);
-		}
+		
+	
 	}
 
 }

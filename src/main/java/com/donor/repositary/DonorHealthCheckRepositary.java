@@ -10,6 +10,6 @@ import com.donor.entities.DonorHealthCheck;
 public interface DonorHealthCheckRepositary extends JpaRepository<DonorHealthCheck, Integer>{
 
 	Optional<DonorHealthCheck> findByDonorHealthCheckId(Integer donorHealthCheckId);
-	Optional<DonorHealthCheck> findByDonorHealthCheckIAndStatus(Integer donorHealthCheckId ,String PASSED );
+	Optional<DonorHealthCheck> findByDonorHealthCheckIdAndStatus(Integer donorHealthCheckId ,StatusType status );
 
 }

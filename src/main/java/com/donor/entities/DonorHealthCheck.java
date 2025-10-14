@@ -42,7 +42,7 @@ public class DonorHealthCheck implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_health_check_id")
-	private Integer DonorHealthCheckId;
+	private Integer donorHealthCheckId;
 
 	@Column(nullable = true)
 	private String hemoglobinLevel;

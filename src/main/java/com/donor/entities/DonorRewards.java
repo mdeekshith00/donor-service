@@ -46,7 +46,7 @@ public class DonorRewards implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_rewards_id")
-	private Integer DonorRewardsId;
+	private Integer donorRewardsId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)

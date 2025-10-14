@@ -4,7 +4,8 @@ import com.donor.dto.DonorRewardsDto;
 
 public interface DonorRewardsService {
 	
-	public DonorRewardsDto getRewards(Integer DonorRewardsId);
+	public DonorRewardsDto getRewards(Integer donorRewardsId);
+	public DonorRewardsDto addRewardToDonor(Integer donorId);
 
 
 }

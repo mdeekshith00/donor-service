@@ -33,16 +33,17 @@ public class DonorHealthCheckServiceImpl implements DonorHealthCheckService {
 				 .orElseThrow(() -> new BloodBankBusinessException(ErrorConstants.DONOR_DETAILS_NOT_FOUND , HttpStatus.BAD_REQUEST , ErrorConstants.DATA_NOT_FOUND));
 		 
 		 DonorHealthCheck healthCheckup = null;
-		 if(donorHealthCheckVO.getDonorHealthCheckId() == null) {
-			 healthCheckup = mapperHelper.voToDonorHealthCheckUpEntity(healthCheckup ,donorHealthCheckVO);
-			 healthCheckup.setDonor(donor);
-			 donorHealthCheckRepositary.save(healthCheckup);
-			 
-		 } 
-		 healthCheckup =  donorHealthCheckRepositary.findByDonorHealthCheckId(donorHealthCheckVO.getDonorHealthCheckId())
+		 if(donorHealthCheckVO.getDonorHealthCheckId() != null) {
+			 healthCheckup =  donorHealthCheckRepositary.findByDonorHealthCheckId(donorHealthCheckVO.getDonorHealthCheckId())
 					 .orElseThrow(() -> new BloodBankBusinessException(ErrorConstants.DONOR_HEALTH_CHECKUP_DETAILS_NOT_FOUND , HttpStatus.BAD_REQUEST , ErrorConstants.DATA_NOT_FOUND));
 		 healthCheckup = mapperHelper.voToDonorHealthCheckUpEntity(healthCheckup ,donorHealthCheckVO);
 			 donorHealthCheckRepositary.save(healthCheckup);
+			 
+		 } 
+		 healthCheckup = new DonorHealthCheck();
+		 healthCheckup = mapperHelper.voToDonorHealthCheckUpEntity(healthCheckup ,donorHealthCheckVO);
+		 healthCheckup.setDonor(donor);
+		 donorHealthCheckRepositary.save(healthCheckup);
 		 
 			 return mapperHelper.DonorHealthEntityToDto(healthCheckup);
 	}

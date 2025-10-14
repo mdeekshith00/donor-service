@@ -13,7 +13,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate   # use 'update' for dev, 'validate' for prod
+      ddl-auto: update   # use 'update' for dev, 'validate' for prod
     show-sql: true
     properties:
       hibernate:

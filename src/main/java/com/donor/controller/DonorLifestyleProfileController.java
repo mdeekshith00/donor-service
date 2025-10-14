@@ -30,7 +30,7 @@ public class DonorLifestyleProfileController {
 		return ResponseEntity.status(HttpStatus.OK).body(lifeStyleDto);  
 		
 	}
-	@PostMapping("/addorupdate/{donorId}")
+	@PostMapping("/add-update/{donorId}")
     public  ResponseEntity<DonorLifeStyleProfileDto>  addorUpdateDonorLifeStyle(@PathVariable Integer donorId , @RequestBody DonorLifestyleProfileVO  donorLifestyleProfileVO) {
 		DonorLifeStyleProfileDto lifeStyleDto =	donorLifestyleProfileService.addorUpdateDonorLifeStyle(donorId, donorLifestyleProfileVO);
 	    return ResponseEntity.status(HttpStatus.OK).body(lifeStyleDto);  

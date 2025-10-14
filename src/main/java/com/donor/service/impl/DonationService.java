@@ -3,10 +3,7 @@ package com.donor.service.impl;
 
 import java.time.Duration;
 
-import org.apache.http.HttpHeaders;
-import org.hibernate.validator.internal.util.logging.LoggerFactory;
-import org.jboss.logging.Logger;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,10 +19,8 @@ import reactor.util.retry.Retry;
 @RequiredArgsConstructor
 public class DonationService {
 	
+	  @Qualifier("donationWebClient")
     private final WebClient donationWebClient;
-    private static final String DONATION_URL = "http://localhost:8082/donation-event";
-    private static final String SERVICE_TOKEN = "my-shared-secret";
-
 
     /**
      * Asynchronously notifies the Donation Service about a new donation event.
@@ -35,8 +30,8 @@ public class DonationService {
         log.info(">>> Sending donation event to Donation Service for donorId: {}", donationRequest.getVolume());
 
         donationWebClient.post()
-                .uri(DONATION_URL)
-                .header("X-Service-Token", SERVICE_TOKEN)
+//                .uri(DONATION_URL)
+//                .header("X-Service-Token", SERVICE_TOKEN)
                 .bodyValue(donationRequest)
                 .retrieve()
                 .onStatus(status -> status.value() == 401,

@@ -102,6 +102,7 @@ public class MapperHelper {
 		if(vo == null) {
 			return null;
 		}
+		
 		Optional.ofNullable(vo.getHemoglobinLevel()).ifPresent(donorHealthCheck::setHemoglobinLevel);
 		Optional.ofNullable(vo.getBloodPressureDiastolic()).ifPresent(donorHealthCheck::setBloodPressureDiastolic);
 		Optional.ofNullable(vo.getBloodPressureSystolic()).ifPresent(donorHealthCheck::setBloodPressureSystolic);
@@ -117,6 +118,7 @@ public class MapperHelper {
 		
 		return donorHealthCheck;	
 	}
+	
 	public DonorLifeStyleProfileDto lifeStleToLifeStyleDto(DonorLifestyleProfile lifeStyle) {
 		if(lifeStyle == null) {
 			return null;
@@ -135,7 +137,9 @@ public class MapperHelper {
                     .lastUpdatedDate(lifeStyle.getUpdatedAt())
                       .build();
 	}
-	public void addorUpdateDonorLifeStyle(DonorLifestyleProfile profile , DonorLifestyleProfileVO donorLifestyleProfileVO)
+	
+	
+	public DonorLifestyleProfile addorUpdateDonorLifeStyle(DonorLifestyleProfile profile , DonorLifestyleProfileVO donorLifestyleProfileVO)
 	{
 		Optional.ofNullable(donorLifestyleProfileVO.getSmoking()).ifPresent(profile::setSmoking);
 		Optional.ofNullable(donorLifestyleProfileVO.getAlcoholConsumption()).ifPresent(profile::setAlcoholConsumption);
@@ -149,6 +153,7 @@ public class MapperHelper {
 		Optional.ofNullable(donorLifestyleProfileVO.getLastUpdatedDate()).ifPresent(profile::setUpdatedAt);
 		
 		profile.setUpdatedAt(LocalDateTime.now());
+		return profile;
 	}
 	
 	public DonorHealthCheckDto DonorHealthEntityToDto(DonorHealthCheck healthCheckup) {

@@ -19,7 +19,7 @@ import lombok.Setter;
 @Builder
 public class DonorLifestyleProfileVO {
 	
-	private Integer DonorLifestyleProfileId;
+	private Integer donorLifestyleProfileId;
     
     private Boolean smoking;
   

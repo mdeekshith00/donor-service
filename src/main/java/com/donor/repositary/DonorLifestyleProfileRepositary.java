@@ -8,6 +8,7 @@ import com.donor.entities.DonorLifestyleProfile;
 
 public interface DonorLifestyleProfileRepositary extends JpaRepository<DonorLifestyleProfile, Integer>{
 	
-	Optional<DonorLifestyleProfile> findByDonorLifestyleProfileId(Integer DonorLifestyleProfileId);
+	Optional<DonorLifestyleProfile> findByDonorLifestyleProfileId(Integer donorLifestyleProfileId);
 
 }
+

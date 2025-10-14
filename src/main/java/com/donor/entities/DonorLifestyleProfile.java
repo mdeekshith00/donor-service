@@ -45,7 +45,7 @@ public class DonorLifestyleProfile implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_lifestyle_profile_id")
-	private Integer DonorLifestyleProfileId;
+	private Integer donorLifestyleProfileId;
     @Column
     private Boolean smoking;
     @Column

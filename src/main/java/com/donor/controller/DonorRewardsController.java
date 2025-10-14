@@ -27,5 +27,11 @@ public class DonorRewardsController {
 		return ResponseEntity.status(HttpStatus.OK).body(rewardsDto);
 		
 	}
+	@GetMapping
+	public ResponseEntity<DonorRewardsDto>  addRewardToDonor(@PathVariable Integer donorId) {
+		DonorRewardsDto rewardsDto = donorRewardsServicea.addRewardToDonor(donorId);
+		return ResponseEntity.status(HttpStatus.OK).body(rewardsDto);
+	}
+	
 
 }
