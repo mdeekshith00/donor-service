@@ -16,6 +16,7 @@ import com.common.dto.DonationResponseDto;
 import com.common.dto.DonorResponseDto;
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
+import com.common.enums.DonationType;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
 import com.common.exception.BloodBankBusinessException;
@@ -178,13 +179,19 @@ public class DonorServiceImpl implements DonorServcie {
 		}
 
 		DonationResponseDto responseDto =  DonationResponseDto.builder()
-				.bloodGroup(BloodGroupType.valueOf(donationRequest.getBloodGroup().toUpperCase()))
 				.donorId(donor.getDonorId())
 				.eventId(Integer.valueOf(donor.getDonorId()))
+				.bloodGroup(BloodGroupType.valueOf(donationRequest.getBloodGroup().toUpperCase()))
 				.volume(donationRequest.getVolume())
+				.donationType(donationRequest.getDonationType())
+				.alcoholLast24h(donationRequest.getAlcoholLast24h())
+				.tattooLast6Months(donationRequest.getTattooLast6Months())
+				.drugUse(donationRequest.getDrugUse())
+				.pulse(donationRequest.getPulse())
+				.temperature(donationRequest.getTemperature())
 				.build();
-		
-		donationService.notifyDonationServiceAsync(donationRequest);
+
+		donationService.notifyDonationServiceAsync(responseDto);
 		
 		return responseDto;
 	}

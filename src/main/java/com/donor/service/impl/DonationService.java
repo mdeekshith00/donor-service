@@ -1,13 +1,14 @@
 package com.donor.service.impl;
 
 
+
 import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.common.vo.DonationRequestVO;
+import com.common.dto.DonationResponseDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +20,13 @@ import reactor.util.retry.Retry;
 @RequiredArgsConstructor
 public class DonationService {
 	
-	  @Qualifier("donationWebClient")
+	@Qualifier("donationWebClient")
     private final WebClient donationWebClient;
-
-    /**
-     * Asynchronously notifies the Donation Service about a new donation event.
-     * Includes retry logic and proper error handling.
-     */
-    public void notifyDonationServiceAsync(DonationRequestVO donationRequest) {
-        log.info(">>> Sending donation event to Donation Service for donorId: {}", donationRequest.getVolume());
+	
+    public void notifyDonationServiceAsync(DonationResponseDto donationRequest) {
+        log.info(">>> Sending donor event to Donation Service for donorId: {}", donationRequest.getDonorId());
 
         donationWebClient.post()
-//                .uri(DONATION_URL)
-//                .header("X-Service-Token", SERVICE_TOKEN)
                 .bodyValue(donationRequest)
                 .retrieve()
                 .onStatus(status -> status.value() == 401,
