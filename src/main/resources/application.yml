@@ -26,6 +26,8 @@ spring:
 #    locations: classpath:db/migration
   flyway:
     enabled: false
-
+eureka:
+ instance:
+  prefer-ip-address: true
 
 internal:service-token: my-shared-secret
