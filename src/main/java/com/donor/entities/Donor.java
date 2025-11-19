@@ -3,13 +3,16 @@ package com.donor.entities;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -17,6 +20,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,10 +51,8 @@ public class Donor implements Serializable {
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		@Column(name = "donor_id")
 		private Integer donorId;
-
-		@Enumerated(EnumType.STRING)
-		@Column(nullable = true)
-		private BloodGroupType bloodGroup;
+ 
+		private String bloodGroup;
 
 		@Enumerated(EnumType.STRING)
 		@Column(nullable = true)
@@ -64,7 +66,7 @@ public class Donor implements Serializable {
 
 		 private Integer totalDonations;
 
-		 private Integer totalUnitsDonated;
+		 private Integer totalUnitsDonated;  // 1 unit = ~450 ml of blood.
 
 		 private Boolean isEligibleToDonate;
 
@@ -86,36 +88,35 @@ public class Donor implements Serializable {
 
 		 private Boolean hasChronicDiseases;   // e.g., diabetes, hypertension
 
+		 @CreatedDate
 		 private LocalDateTime createdAt;
 
+		 @LastModifiedDate
 		 private LocalDateTime updatedAt;
 		 @Enumerated(EnumType.STRING)
-		 @Column(nullable = true)
+		 @Column
 		 private StatusType status; // (ENUM: ACTIVE, INACTIVE, DECEASED)
-
+         @Column(unique = true, nullable = false)
 		 private Integer userId; // refering from user
 		 
 		 private String recentMedications;
 		 
 		 private String medicalConditions;
 
-		 @OneToMany(mappedBy = "donor")
+	     @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 		 @JsonManagedReference
-		 private List<DonorHealthCheck> DonorHealthCheck;
+		 private List<DonorHealthCheck> DonorHealthCheck = new ArrayList<>();
 
-		 @OneToOne(mappedBy = "donor")
+		 @OneToOne(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 		 @JsonManagedReference
 		 private DonorLifestyleProfile donorLifestyleProfile;
 
-		 @OneToMany(mappedBy = "donor")
+		 @OneToMany(mappedBy = "donor", cascade = CascadeType.ALL, orphanRemoval = true)
 		 @JsonManagedReference
-		 private List<DonorRewards> donorRewards;
+		 private List<DonorRewards> donorRewards = new ArrayList<>();
 
-		 @OneToMany(mappedBy = "donor")
-		 @JsonBackReference
-		 private List<PreDonationCheckup> preDonationCheckup;
 
-	}
+}
 
 
 

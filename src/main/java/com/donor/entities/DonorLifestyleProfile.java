@@ -1,13 +1,19 @@
 package com.donor.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import com.donor.enums.DietType;
+import com.donor.enums.HabitsType;
+import com.donor.enums.SleepType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,32 +45,51 @@ public class DonorLifestyleProfile implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_lifestyle_profile_id")
-	private Integer DonorLifestyleProfile;
-	@Embedded
-	private Smoking smoking; //  (Yes/No, packs per day, since when)
-	@Embedded
-	private Alochol alcoholConsumption; // (Yes/No, frequency: daily/weekly/monthly, lastConsumedDate)
-	@Embedded
-	private Drug drugUse; // (Yes/No, type if any, lastUseDate)
-	@Embedded
-	private Tatoo tattoosOrPiercings; // (Yes/No, dateOfLastTattoo)
-	@Embedded
-	private SleepTime sleepPattern; // (Normal/Irregular, avg hours per day)
+	private Integer donorLifestyleProfileId;
+    @Column
+    private Boolean smoking;
+    @Column
+    private Boolean alcoholConsumption;
+    @Column
+    private Boolean drugUse;
+    @Column
+    private Boolean tattoosOrPiercings;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private SleepType sleepPattern; // (Normal/Irregular, avg hours per day)
+    
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private DietType dietType; // (Veg/Non-Veg/Vegan/Other)
 
 	private String exerciseRoutine; //  (Regular/Occasional/Never)
-	@Embedded
-	private Habits otherhabits; // (free text – e.g., chewing tobacco, medications)
+ 
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "donor_habits", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "habit")
+	private HabitsType habits ; 
+    
+    @Column(length = 200)
+    private String otherHabitsDetails; // Free text for habits not in enum
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-	private LocalDateTime lastUpdatedDate;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
 	@OneToOne
 	@JoinColumn(name = "donor_id")
 	@JsonBackReference
 	private Donor donor;
 
-
-
 }
+//@Embedded
+//private SleepTime sleepPattern;
+//@Embedded
+//private Tatoo tattoosOrPiercings;
+//@Embedded
+//private Smoking smoking; //  (Yes/No, packs per day, since when)
+//@Embedded
+//private Alochol alcoholConsumption; // (Yes/No, frequency: daily/weekly/monthly, lastConsumedDate)
+//@Embedded
+//private Drug drugUse; // (Yes/No, type if any, lastUseDate)

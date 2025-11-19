@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DonorHealthCheckVO {
 	
-	private Integer DonorHealthCheckId;
+	private Integer donorHealthCheckId;
 
 	
 	private String hemoglobinLevel;

@@ -26,4 +26,7 @@ public class DonorUserCacheService {
     public void evictUser(Integer userId) {
         userCache.remove(userId);
     }
+    public void clearCache() {
+    	userCache.clear();
+    }
 }
