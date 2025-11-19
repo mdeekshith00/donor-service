@@ -8,18 +8,7 @@ import com.common.enums.BloodGroupType;
 import com.common.enums.DonationEligibilityStatus;
 import com.common.enums.RegisterType;
 import com.common.enums.StatusType;
-import com.donor.entities.DonorHealthCheck;
-import com.donor.entities.DonorLifestyleProfile;
-import com.donor.entities.DonorRewards;
-import com.donor.entities.PreDonationCheckup;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,6 +27,7 @@ public class DonorRequestVO {
 		private Boolean isAvailableToDonate;
 
 	    private LocalDate lastDonationDate;
+	    
 
 		 private LocalDate nextEligibleDate;
 
@@ -79,6 +69,5 @@ public class DonorRequestVO {
 
 		 private List<DonorRewardsVO> donorRewards;
 
-		 private List<PreDonationCheckupVO> preDonationCheckup;
 
 }

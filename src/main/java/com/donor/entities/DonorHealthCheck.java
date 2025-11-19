@@ -1,16 +1,18 @@
 package com.donor.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import com.common.enums.StatusType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,7 +42,7 @@ public class DonorHealthCheck implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "donor_health_check_id")
-	private Integer DonorHealthCheckId;
+	private Integer donorHealthCheckId;
 
 	@Column(nullable = true)
 	private String hemoglobinLevel;
@@ -78,10 +80,15 @@ public class DonorHealthCheck implements Serializable{
 	@Column(nullable = true)
     private StatusType status; //  ENUM: PASSED, FAILED, RECHECK_REQUIRED)
 
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "donor_id")
     @JsonBackReference
     private Donor donor;
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
 
 }

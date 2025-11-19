@@ -17,10 +17,9 @@ public class UserServiceClient {
 
     private final WebClient.Builder webClientBuilder;
     private final Cache<Integer, DonorResponseDto> userCache;
-    private final String systemToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBbnUiLCJVc2VyX1Bob25lTnVtYmVyICI6Ijk4NzY1MTMyMTMi"
-    		+ "LCJVc2VyX1JvbGU6IjpbIkRPTk9SIl0sIkpXdF9Vc2VySWQgOiI6IjEiLCJpYXQiOjE3NTg0NzYzMzgsImV4cCI6MTc1ODUxMjMzOH0.vlM"
-    		+ "TsPj0yB"
-    		+ "orX5RF6iXKgOqFaCUAsLy3P8-kHi5eApM";
+    private final String systemToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBbnUiLCJVc2VyX1Bob25lTnVtYmVyICI6Ijk4N"
+    		+ "zY1MTMyMTMiLCJVc2VyX1JvbGU6IjpbIkRPTk9SIl0sIkpXdF9Vc2VySWQgOiI6IjE"
+    		+ "iLCJpYXQiOjE3NTg4MTc2ODIsImV4cCI6MTc1ODg1MzY4Mn0.dkiiXQ9mDKZf9kvX-uxjhi4qg4Uz7cJReTeN_Tu09b4";
 
 //     Fetch user info from user-service by userId. Synchronous call for now; fallback can be implemented later.
 
